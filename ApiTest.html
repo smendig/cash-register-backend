@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Backend Api Test</title>
+</head>
+
+<body>
+    <div id="container-btns">
+        <button class="btn" onclick="aniadirItem('CAP')">CAP</button>
+        <button class="btn" onclick="aniadirItem('TSHIRT')">TSHIRT</button>
+        <button class="btn" onclick="aniadirItem('HOODY')">HOODY</button>
+    </div>
+    <div id="container-items"></div>
+    <div id="container-btn-comprar">
+        <button class="btn comprar" onclick="comprar()">Comprar</button>
+    </div>
+    <div id="container-response">
+        <div id="response">
+            <div><span>Total: </span><span id="total">0</span><span>€</span></div>
+            <div><span>Discount:</span> <span id="discount">0</span><span>€</span></div>
+            <div><span>Total after discount: </span><span id="totalafterdiscount">0</span><span>€</span></div>
+            <br>
+            <h2>Raw</h2>
+            <pre id="raw"></pre>
+        </div>
+    </div>
+    <script>
+        let ArrayItems = []
+
+        function aniadirItem(item) {
+            ArrayItems.push(item)
+            refreshItemsView()
+        }
+
+        function refreshItemsView() {
+            const elementView = document.getElementById('container-items')
+            elementView.innerHTML = ArrayItems.reduce((p, item) => { return `<div>${(p + item)}</div>` }, '')
+        }
+
+        function comprar() {
+            fetch('http://localhost:3000/api/comprar', {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ compra: ArrayItems })
+            }).then((response) => {
+                return response.json()
+            }).then((data) => {
+                document.getElementById('total').innerHTML = data.total
+                document.getElementById('totalafterdiscount').innerHTML = data.totalAfterDiscount
+                document.getElementById('discount').innerHTML = data.discount
+                document.getElementById('raw').innerHTML = JSON.stringify(data, null, 4)
+            })
+        }
+
+    </script>
+</body>
+
+</html>
