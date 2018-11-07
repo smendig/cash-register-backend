@@ -1,7 +1,7 @@
 version: '3'
 services:
   express:
-    build: ./cash-register-express
+    build: ./src
     command: npm start
     ports:
       - '3000:3000'
